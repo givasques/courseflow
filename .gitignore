@@ -1,0 +1,42 @@
+# Build
+bin/
+obj/
+Debug/
+Release/
+artifacts/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Tests
+TestResults/
+*.coverage
+*.coveragexml
+
+# NuGet
+*.nupkg
+
+# Docker
+docker-compose.override.yml
+
+# Local configs / secrets
+appsettings.Development.json
+secrets.json
+
+# Temp
+*.swp
+*~
