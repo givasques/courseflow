@@ -95,4 +95,32 @@ public class AuthController(
 
         return Ok(tokens);
     }
+
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh(RefreshTokenDto refreshTokenDto)
+    {
+        RefreshToken? refreshToken = await identityDbContext.RefreshTokens
+            .Include(rt => rt.User)
+            .FirstOrDefaultAsync(rt => rt.Token == refreshTokenDto.RefreshToken);
+
+        if(refreshToken is null)
+        {
+            return Unauthorized();
+        }
+
+        if (refreshToken.ExpiresAtUtc < DateTime.UtcNow)
+        {
+            return Unauthorized();
+        }
+
+        var tokenRequest = new TokenRequest(refreshToken.User.Id, refreshToken.User.Email!);
+        AccessTokenDto tokens = tokenProvider.Create(tokenRequest);
+
+        refreshToken.Token = tokens.RefreshToken;
+        refreshToken.ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthOptions.RefreshTokenExpirationInDays);
+
+        await identityDbContext.SaveChangesAsync();
+
+        return Ok(tokens);
+    }
 }
