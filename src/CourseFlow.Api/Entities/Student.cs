@@ -1,4 +1,6 @@
-﻿namespace CourseFlow.Api;
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace CourseFlow.Api;
 
 public sealed class Student
 {
@@ -8,4 +10,6 @@ public sealed class Student
     public DateTime RegisteredAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
     public IEnumerable<Enrollment> Enrollments { get; set; } = [];
+
+    public string IdentityId { get; set; }
 }
