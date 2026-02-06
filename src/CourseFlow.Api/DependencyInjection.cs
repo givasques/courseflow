@@ -1,6 +1,9 @@
 ﻿using System.Text;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.IdentityModel.Tokens;
@@ -18,6 +21,9 @@ public static class DependencyInjection
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Services.AddFluentValidationAutoValidation();
+        builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
         return builder;
     }
@@ -137,6 +143,32 @@ public static class DependencyInjection
                 .AddHttpClientInstrumentation()
                 .AddAspNetCoreInstrumentation()
                 .AddConsoleExporter();
+        });
+
+        return builder;
+    }
+
+    public static WebApplicationBuilder AddErrorHandling(this WebApplicationBuilder builder)
+    {
+        builder.Services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.InvalidModelStateResponseFactory = context =>
+            {
+                var problemDetails = new ValidationProblemDetails(context.ModelState)
+                {
+                    Title = "One or more validation errors occurred.",
+                    Status = StatusCodes.Status400BadRequest,
+                    Type = "https://httpstatuses.com/400",
+                    Instance = context.HttpContext.Request.Path
+                };
+
+                problemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
+
+                return new BadRequestObjectResult(problemDetails)
+                {
+                    ContentTypes = { "application/problem+json" }
+                };
+            };
         });
 
         return builder;

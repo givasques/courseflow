@@ -14,7 +14,8 @@ builder
     .AddApiServices()
     .AddDatabase()
     .AddAuthenticationServices()
-    .AddObservability();
+    .AddObservability()
+    .AddErrorHandling();
     
 var app = builder.Build();
 

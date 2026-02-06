@@ -1,0 +1,7 @@
+﻿namespace CourseFlow.Api;
+
+public class LoginStudentDto
+{
+    public required string Email { get; init; }
+    public required string Password { get; init; }
+}
