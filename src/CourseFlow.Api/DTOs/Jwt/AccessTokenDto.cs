@@ -1,6 +1,3 @@
 ﻿namespace CourseFlow.Api;
 
-public class AccessTokenDto
-{
-
-}
+public sealed record AccessTokenDto (string AccessToken, string RefreshToken);

@@ -11,7 +11,8 @@ namespace CourseFlow.Api;
 public class AuthController(
     ApplicationDbContext applicationDbContext,
     ApplicationIdentityDbContext identityDbContext, 
-    UserManager<IdentityUser> userManager) : ControllerBase
+    UserManager<IdentityUser> userManager,
+    TokenProvider tokenProvider) : ControllerBase
 {
     [HttpPost("register")]
     public async Task<IActionResult> RegisterStudent(RegisterStudentDto registerStudentDto)
@@ -33,17 +34,16 @@ public class AuthController(
                 ));
             }
 
-            if(registerStudentDto.UserType == UserType.Student)
-            {
-                Student student = registerStudentDto.ToStudent();
-                student.IdentityId = identityUser.Id;
+            
+            Student student = registerStudentDto.ToStudent();
+            student.IdentityId = identityUser.Id;
 
-                applicationDbContext.Students.Add(student);
-                await applicationDbContext.SaveChangesAsync();
-            }
+            applicationDbContext.Students.Add(student);
+            await applicationDbContext.SaveChangesAsync();
+            
 
             await transaction.CommitAsync();
-            return Ok(identityUser.Id);
+            return Ok(student.Id);
         }
         catch
         {
@@ -62,6 +62,9 @@ public class AuthController(
             return Unauthorized();
         }
 
-        return Ok("Logged in! Your token will be provided soon");
+        var tokenRequest = new TokenRequest(identityUser.Id, identityUser.Email!);
+        AccessTokenDto tokens = tokenProvider.Create(tokenRequest);
+
+        return Ok(tokens);
     }
 }

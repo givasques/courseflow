@@ -18,7 +18,7 @@ public static class RegisterStudentDtoMappings
     {
         return new Student
         {
-            Id = $"s_{new Guid()}",
+            Id = $"s_{Guid.NewGuid()}",
             Email = registerUserDto.Email,
             FullName = registerUserDto.FullName,
             RegisteredAtUtc = DateTime.UtcNow,

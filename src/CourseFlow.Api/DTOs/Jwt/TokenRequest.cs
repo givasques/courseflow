@@ -1,6 +1,3 @@
 ﻿namespace CourseFlow.Api;
 
-public class TokenRequest
-{
-
-}
+public sealed record TokenRequest (string IdentityUserId, string IdentityUserEmail);

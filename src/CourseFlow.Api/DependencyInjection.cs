@@ -121,6 +121,8 @@ public static class DependencyInjection
                     };
                 });
 
+            builder.Services.AddTransient<TokenProvider>();
+
             builder.Services.AddAuthorization();
 
         return builder;
