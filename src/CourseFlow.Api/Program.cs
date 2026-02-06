@@ -6,6 +6,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Instrumentation.Http;
+using OpenTelemetry.Metrics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,15 +40,22 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddOpenTelemetry()
-    .WithTracing(tracerProviderBuilder =>
+    .ConfigureResource(resource => resource.AddService(builder.Environment.ApplicationName))
+    .WithTracing(tracing =>
     {
-        tracerProviderBuilder
-            .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("CourseFlowApi"))
+        tracing
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation()
-            .AddConsoleExporter();      
+            .AddConsoleExporter();    
+    })
+    .WithMetrics(metrics =>
+    {
+        metrics
+            .AddHttpClientInstrumentation()
+            .AddAspNetCoreInstrumentation()
+            .AddConsoleExporter();
     });
-
+    
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
