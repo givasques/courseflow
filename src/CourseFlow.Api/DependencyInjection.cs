@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -42,6 +43,38 @@ public static class DependencyInjection
                             .MigrationsHistoryTable(HistoryRepository.DefaultTableName));
             }
         });
+
+        
+        builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+        {
+            options.UseSnakeCaseNamingConvention();
+
+            if(builder.Environment.IsDevelopment())
+            {
+                options
+                    .UseSqlite(
+                        connectionString,
+                        sqliteOptions => sqliteOptions
+                            .MigrationsHistoryTable(HistoryRepository.DefaultTableName));
+            } 
+            else
+            {
+                options
+                    .UseNpgsql(
+                        connectionString,
+                        npgsqlOptions => npgsqlOptions
+                            .MigrationsHistoryTable(HistoryRepository.DefaultTableName));
+            }
+        });
+
+        return builder;
+    }
+
+    public static WebApplicationBuilder AddAuthenticationServices(this WebApplicationBuilder builder)
+    {
+        builder.Services
+            .AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationIdentityDbContext>();
 
         return builder;
     }

@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder
     .AddApiServices()
     .AddDatabase()
+    .AddAuthenticationServices()
     .AddObservability();
     
 var app = builder.Build();
