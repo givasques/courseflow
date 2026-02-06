@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseFlow.Api", "CourseFlow.Api.csproj", "{566745FB-925C-9BAA-50D0-2FE941698A37}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{566745FB-925C-9BAA-50D0-2FE941698A37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{566745FB-925C-9BAA-50D0-2FE941698A37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{566745FB-925C-9BAA-50D0-2FE941698A37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{566745FB-925C-9BAA-50D0-2FE941698A37}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3BFC160D-595D-4FC1-9BB3-E02276B54FFB}
+	EndGlobalSection
+EndGlobal
