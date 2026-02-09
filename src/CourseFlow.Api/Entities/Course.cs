@@ -10,6 +10,6 @@ public sealed class Course
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
     public ICollection<Enrollment> Enrollments { get; set; } = [];
-    public string InstructorId { get; set; }
-    public Instructor Instructor { get; set; }
+    public string? InstructorId { get; set; }
+    public Instructor? Instructor { get; set; }
 }
