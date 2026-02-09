@@ -10,32 +10,20 @@ public class AuthController(AuthService authService) : ControllerBase
     public async Task<IActionResult> Register(RegisterDto registerDto)
     {
         var serviceResult = await authService.Register(registerDto);
-        if (!serviceResult.Success)
-        {
-            return StatusCode(serviceResult.StatusCode, new ValidationProblemDetails(serviceResult.Errors ?? []));
-        }
-        return Ok(serviceResult.Data);
+        return this.FromServiceResult(serviceResult);
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto loginDto)
     {
         var serviceResult = await authService.Login(loginDto);
-        if (!serviceResult.Success)
-        {
-            return StatusCode(serviceResult.StatusCode, new ValidationProblemDetails(serviceResult.Errors ?? []));
-        }
-        return Ok(serviceResult.Data);
+        return this.FromServiceResult(serviceResult);
     }
 
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh(RefreshTokenDto refreshTokenDto)
     {
         var serviceResult = await authService.Refresh(refreshTokenDto);
-        if (!serviceResult.Success)
-        {
-            return StatusCode(serviceResult.StatusCode, new ValidationProblemDetails(serviceResult.Errors ?? []));
-        }
-        return Ok(serviceResult.Data);
+        return this.FromServiceResult(serviceResult);
     }
 }
