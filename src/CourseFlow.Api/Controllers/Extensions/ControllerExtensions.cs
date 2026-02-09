@@ -12,11 +12,24 @@ public static class ControllerExtensions
         var problem = new ProblemDetails
         {
           Status = result.StatusCode,
-          Title = "Request failed"  
+          Title = GetTitle(result.StatusCode),
+          Instance = controller.HttpContext.Request.Path
         };
 
         problem.Extensions["errors"] = result.Errors;
+        problem.Extensions["traceId"] = controller.HttpContext.TraceIdentifier;
 
         return controller.StatusCode(result.StatusCode, problem);
     }
+
+    private static string GetTitle(int statusCode) =>
+    statusCode switch
+    {
+        400 => "Validation failed",
+        401 => "Unauthorized",
+        403 => "Forbidden",
+        404 => "Not Found",
+        409 => "Conflict",
+        _ => "Request failed"
+    };
 }

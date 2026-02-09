@@ -21,6 +21,9 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
                 detail: "An unexpected error occured.")
         };
 
+        problem.Extensions["traceId"] = httpContext.TraceIdentifier;
+        problem.Instance = httpContext.Request.Path;
+
         httpContext.Response.StatusCode = problem.Status ?? 500;
         httpContext.Response.ContentType = "application/problem+json";
 
