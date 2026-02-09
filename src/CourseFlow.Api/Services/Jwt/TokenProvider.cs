@@ -24,7 +24,7 @@ public sealed class TokenProvider(IOptions<JwtAuthOptions> options, UserManager<
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         var roleList = await userManager.GetRolesAsync(identityUser);
-        var role = roleList.SingleOrDefault() ?? throw new Exception("User has no role assigned.");;
+        var role = roleList.SingleOrDefault() ?? throw new Exception("User has no role assigned.");
 
         List<Claim> claims = 
         [

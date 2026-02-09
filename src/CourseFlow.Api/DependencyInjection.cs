@@ -28,6 +28,8 @@ public static class DependencyInjection
         builder.Services.AddScoped<IUserRegistrationStrategy, StudentRegistrationStrategy>();
         builder.Services.AddScoped<IUserRegistrationStrategy, InstructorRegistrationStrategy>();
 
+        builder.Services.AddScoped<AuthService>();
+
         return builder;
     }
     public static WebApplicationBuilder AddDatabase(this WebApplicationBuilder builder)
