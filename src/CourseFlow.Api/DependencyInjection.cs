@@ -25,6 +25,9 @@ public static class DependencyInjection
         builder.Services.AddFluentValidationAutoValidation();
         builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
+        builder.Services.AddScoped<IUserRegistrationStrategy, StudentRegistrationStrategy>();
+        builder.Services.AddScoped<IUserRegistrationStrategy, InstructorRegistrationStrategy>();
+
         return builder;
     }
     public static WebApplicationBuilder AddDatabase(this WebApplicationBuilder builder)

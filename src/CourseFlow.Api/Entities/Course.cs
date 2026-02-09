@@ -9,7 +9,9 @@ public sealed class Course
     public required int WorkloadHours { get; set; }
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
-    public IEnumerable<Enrollment> Enrollments { get; set; } = [];
+    public ICollection<Enrollment> Enrollments { get; set; } = [];
+    public string InstructorId { get; set; }
+    public Instructor Instructor { get; set; }
 }
 
 public enum CourseCategory

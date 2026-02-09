@@ -2,9 +2,9 @@
 
 namespace CourseFlow.Api;
 
-public class LoginStudentDtoValidator : AbstractValidator<LoginStudentDto>
+public class LoginDtoValidator : AbstractValidator<LoginDto>
 {
-    public LoginStudentDtoValidator()
+    public LoginDtoValidator()
     {
         RuleFor(x => x.Email)
             .NotEmpty()

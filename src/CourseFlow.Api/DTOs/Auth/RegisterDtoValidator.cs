@@ -2,9 +2,9 @@
 
 namespace CourseFlow.Api;
 
-public class RegisterStudentDtoValidator : AbstractValidator<RegisterStudentDto>
+public class RegisterDtoValidator : AbstractValidator<RegisterDto>
 {
-    public RegisterStudentDtoValidator()
+    public RegisterDtoValidator()
     {
         RuleFor(x => x.FullName)
             .NotEmpty()
@@ -35,7 +35,7 @@ public class RegisterStudentDtoValidator : AbstractValidator<RegisterStudentDto>
             .Equal(x => x.Password)
             .WithMessage("Passwords do not match.");
 
-        RuleFor(x => x.UserType)
+        RuleFor(x => x.UserRole)
             .IsInEnum()
             .WithMessage("Invalid user type.");
     }

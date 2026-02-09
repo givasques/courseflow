@@ -14,22 +14,23 @@ public class AuthController(
     ApplicationIdentityDbContext identityDbContext, 
     UserManager<IdentityUser> userManager,
     TokenProvider tokenProvider,
-    IOptions<JwtAuthOptions> options) : ControllerBase
+    IOptions<JwtAuthOptions> options,
+    IEnumerable<IUserRegistrationStrategy> registrationStrategies) : ControllerBase
 {
     private readonly JwtAuthOptions _jwtAuthOptions = options.Value;
 
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterStudent(RegisterStudentDto registerStudentDto)
+    public async Task<IActionResult> Register(RegisterDto registerDto)
     {
         using IDbContextTransaction transaction = await identityDbContext.Database.BeginTransactionAsync();
         applicationDbContext.Database.SetDbConnection(identityDbContext.Database.GetDbConnection());
         await applicationDbContext.Database.UseTransactionAsync(transaction.GetDbTransaction());
 
-        IdentityUser identityUser = registerStudentDto.ToIdentityUser();
+        IdentityUser identityUser = registerDto.ToIdentityUser();
 
         try
         {
-            IdentityResult result = await userManager.CreateAsync(identityUser, registerStudentDto.Password);
+            IdentityResult result = await userManager.CreateAsync(identityUser, registerDto.Password);
             
             if(!result.Succeeded)
             {
@@ -38,23 +39,19 @@ public class AuthController(
                 ));
             }
 
-            var roleResult = await userManager.AddToRoleAsync(identityUser, Roles.Student);
+            var registrationStrategy = registrationStrategies.First(s => s.Role == registerDto.UserRole.ToString());
 
-            if(!roleResult.Succeeded)
+            var strategyResult = await registrationStrategy.RegisterAsync(registerDto, identityUser);
+
+            if(!strategyResult.Succeeded)
             {
+                await transaction.RollbackAsync();
                 return ValidationProblem(new ValidationProblemDetails(
-                    result.Errors.ToDictionary(e => e.Code, e => new[] { e.Description })
+                    strategyResult.Errors.ToDictionary(e => e.Code, e => new[] { e.Description })
                 ));
             }
             
-            Student student = registerStudentDto.ToStudent();
-            student.IdentityId = identityUser.Id;
-
-            applicationDbContext.Students.Add(student);
-            await applicationDbContext.SaveChangesAsync();
-            
-            var tokenRequest = new TokenRequest(identityUser.Id, identityUser.Email!);
-            AccessTokenDto tokens = tokenProvider.Create(tokenRequest);
+            AccessTokenDto tokens = await tokenProvider.Create(identityUser);
 
             var refreshToken = new RefreshToken()
             {
@@ -78,17 +75,16 @@ public class AuthController(
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginStudentDto loginStudentDto)
+    public async Task<IActionResult> Login(LoginDto loginDto)
     {
-        IdentityUser? identityUser = await userManager.FindByEmailAsync(loginStudentDto.Email);
+        IdentityUser? identityUser = await userManager.FindByEmailAsync(loginDto.Email);
 
-        if (identityUser is null || !await userManager.CheckPasswordAsync(identityUser, loginStudentDto.Password))
+        if (identityUser is null || !await userManager.CheckPasswordAsync(identityUser, loginDto.Password))
         {
             return Unauthorized();
         }
 
-        var tokenRequest = new TokenRequest(identityUser.Id, identityUser.Email!);
-        AccessTokenDto tokens = tokenProvider.Create(tokenRequest);
+        AccessTokenDto tokens = await tokenProvider.Create(identityUser);
 
         var refreshToken = new RefreshToken()
         {
@@ -121,8 +117,7 @@ public class AuthController(
             return Unauthorized();
         }
 
-        var tokenRequest = new TokenRequest(refreshToken.User.Id, refreshToken.User.Email!);
-        AccessTokenDto tokens = tokenProvider.Create(tokenRequest);
+        AccessTokenDto tokens = await tokenProvider.Create(refreshToken.User);
 
         refreshToken.Token = tokens.RefreshToken;
         refreshToken.ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthOptions.RefreshTokenExpirationInDays);

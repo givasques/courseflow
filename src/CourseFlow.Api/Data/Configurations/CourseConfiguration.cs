@@ -20,7 +20,11 @@ public sealed class CourseConfiguration : IEntityTypeConfiguration<Course>
         builder.HasIndex(c => c.Category);
 
         builder.HasMany(c => c.Enrollments)
-        .WithOne(e => e.Course)
-        .OnDelete(DeleteBehavior.Cascade);      
+            .WithOne(e => e.Course)
+            .OnDelete(DeleteBehavior.Cascade);  
+
+        builder.HasOne(c => c.Instructor)
+            .WithMany(i => i.Courses)
+            .HasForeignKey(c => c.InstructorId);  
     }
 }

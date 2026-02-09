@@ -1,15 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿namespace CourseFlow.Api;
 
-namespace CourseFlow.Api;
-
-public sealed class Student
+public class Instructor
 {
     public string Id { get; set; }
     public required string FullName { get; set; }
     public required string Email { get; set; }
     public DateTime RegisteredAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
-    public ICollection<Enrollment> Enrollments { get; set; } = [];
-
+    public ICollection<Course> Courses { get; set; } = [];
     public string IdentityId { get; set; }
 }
