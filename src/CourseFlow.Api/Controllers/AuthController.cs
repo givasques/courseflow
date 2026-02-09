@@ -38,6 +38,14 @@ public class AuthController(
                 ));
             }
 
+            var roleResult = await userManager.AddToRoleAsync(identityUser, Roles.Student);
+
+            if(!roleResult.Succeeded)
+            {
+                return ValidationProblem(new ValidationProblemDetails(
+                    result.Errors.ToDictionary(e => e.Code, e => new[] { e.Description })
+                ));
+            }
             
             Student student = registerStudentDto.ToStudent();
             student.IdentityId = identityUser.Id;
