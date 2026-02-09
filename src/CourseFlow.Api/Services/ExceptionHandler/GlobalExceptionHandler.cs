@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OpenTelemetry.Trace;
 
-namespace CourseFlow.Api;
+namespace CourseFlow.Api.Services.ExceptionHandler;
 
 public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {

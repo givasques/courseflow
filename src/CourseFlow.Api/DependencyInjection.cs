@@ -1,4 +1,11 @@
 ﻿using System.Text;
+using CourseFlow.Api.Data;
+using CourseFlow.Api.Services.Application;
+using CourseFlow.Api.Services.ExceptionHandler;
+using CourseFlow.Api.Services.Jwt;
+using CourseFlow.Api.Settings;
+using CourseFlow.Api.User.Registration;
+using CourseFlow.Api.Users.Registration;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

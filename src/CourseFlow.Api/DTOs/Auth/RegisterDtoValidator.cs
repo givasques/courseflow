@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace CourseFlow.Api;
+namespace CourseFlow.Api.DTOs.Auth;
 
 public class RegisterDtoValidator : AbstractValidator<RegisterDto>
 {

@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CourseFlow.Api.Controllers.Extensions;
+using CourseFlow.Api.DTOs.Auth;
+using CourseFlow.Api.DTOs.Jwt;
+using CourseFlow.Api.Services.Application;
+using Microsoft.AspNetCore.Mvc;
 
-namespace CourseFlow.Api;
+namespace CourseFlow.Api.Controllers;
 
 [ApiController]
 [Route("auth")]

@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CourseFlow.Api.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace CourseFlow.Api;
+namespace CourseFlow.Api.Data.Extensions;
 
 public static class DatabaseExtensions
 {

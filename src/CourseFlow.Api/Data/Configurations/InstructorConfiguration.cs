@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CourseFlow.Api.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CourseFlow.Api;
+namespace CourseFlow.Api.Data.Configurations;
 
 public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
 {

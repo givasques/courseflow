@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CourseFlow.Api.Entities;
+using Microsoft.AspNetCore.Identity;
 using Npgsql.Replication;
 
-namespace CourseFlow.Api;
+namespace CourseFlow.Api.DTOs.Auth;
 
 public static class RegisterDtoMappings
 {

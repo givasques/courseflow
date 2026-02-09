@@ -1,7 +1,11 @@
 ﻿
+using CourseFlow.Api.Data;
+using CourseFlow.Api.DTOs.Auth;
+using CourseFlow.Api.Entities;
+using CourseFlow.Api.Users.Registration;
 using Microsoft.AspNetCore.Identity;
 
-namespace CourseFlow.Api;
+namespace CourseFlow.Api.User.Registration;
 
 public sealed class StudentRegistrationStrategy(
     ApplicationDbContext applicationDbContext,

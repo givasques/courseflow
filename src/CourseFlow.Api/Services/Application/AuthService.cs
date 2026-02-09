@@ -1,9 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CourseFlow.Api.Data;
+using CourseFlow.Api.DTOs.Auth;
+using CourseFlow.Api.DTOs.Jwt;
+using CourseFlow.Api.Services.Jwt;
+using CourseFlow.Api.Settings;
+using CourseFlow.Api.Users.Registration;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Options;
 
-namespace CourseFlow.Api;
+namespace CourseFlow.Api.Services.Application;
 
 public sealed class AuthService(
     ApplicationDbContext applicationDbContext,

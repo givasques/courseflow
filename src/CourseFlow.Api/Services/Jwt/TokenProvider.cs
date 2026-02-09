@@ -2,12 +2,14 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using CourseFlow.Api.DTOs.Jwt;
+using CourseFlow.Api.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
-namespace CourseFlow.Api;
+namespace CourseFlow.Api.Services.Jwt;
 
 public sealed class TokenProvider(IOptions<JwtAuthOptions> options, UserManager<IdentityUser> userManager)
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace CourseFlow.Api;
+namespace CourseFlow.Api.DTOs.Jwt;
 
 public sealed class RefreshToken
 {

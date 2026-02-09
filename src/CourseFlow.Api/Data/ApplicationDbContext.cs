@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CourseFlow.Api.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace CourseFlow.Api;
+namespace CourseFlow.Api.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {

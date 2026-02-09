@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace CourseFlow.Api;
+namespace CourseFlow.Api.Controllers.Extensions;
 
 public static class ControllerExtensions
 {

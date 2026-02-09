@@ -1,4 +1,4 @@
-﻿namespace CourseFlow.Api;
+﻿namespace CourseFlow.Api.Settings;
 
 public class JwtAuthOptions
 {

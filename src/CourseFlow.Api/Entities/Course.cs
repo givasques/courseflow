@@ -1,4 +1,4 @@
-﻿namespace CourseFlow.Api;
+﻿namespace CourseFlow.Api.Entities;
 
 public sealed class Course
 {
@@ -12,14 +12,4 @@ public sealed class Course
     public ICollection<Enrollment> Enrollments { get; set; } = [];
     public string InstructorId { get; set; }
     public Instructor Instructor { get; set; }
-}
-
-public enum CourseCategory
-{
-    Technology = 1,
-    Business,
-    Creative,
-    Personal,
-    Education,
-    Health
 }

@@ -7,6 +7,7 @@ using OpenTelemetry.Trace;
 using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Instrumentation.Http;
 using OpenTelemetry.Metrics;
+using CourseFlow.Api.Data.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

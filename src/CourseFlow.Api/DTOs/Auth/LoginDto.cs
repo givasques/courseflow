@@ -1,4 +1,4 @@
-﻿namespace CourseFlow.Api;
+﻿namespace CourseFlow.Api.DTOs.Auth;
 
 public class LoginDto
 {
