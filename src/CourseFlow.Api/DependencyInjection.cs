@@ -131,6 +131,50 @@ public static class DependencyInjection
                       ValidAudience = jwtAuthOptions.Audience,
                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAuthOptions.Key))  
                     };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = context =>
+                        {
+                            context.NoResult();
+
+                            var problem = new ProblemDetails
+                            {
+                              Title = "Unauthorized",
+                              Detail = "Invalid or expired access token.",
+                              Status = 401,
+                              Type =   "https://httpstatuses.com/401",
+                              Instance = context.HttpContext.Request.Path
+                            };
+
+                            problem.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
+
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/problem+json";
+
+                            return context.Response.WriteAsJsonAsync(problem);
+                        },
+
+                        OnChallenge = context =>
+                        {
+                            context.HandleResponse();
+
+                            var problem = new ProblemDetails
+                            {
+                                Title = "Unauthorized",
+                                Detail = "Authentication is required.",
+                                Status = StatusCodes.Status401Unauthorized,
+                                Instance = context.HttpContext.Request.Path
+                            };
+
+                            problem.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
+
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/problem+json";
+
+                            return context.Response.WriteAsJsonAsync(problem);
+                        }
+                    };
                 });
 
             builder.Services.AddTransient<TokenProvider>();

@@ -2,7 +2,7 @@
 
 public static class CourseMappings
 {
-    public static Entities.Course toEntity(this CreateCourseDto createCourseDto)
+    public static Entities.Course ToEntity(this CreateCourseDto createCourseDto)
     {
         return new Entities.Course ()
         {
@@ -29,5 +29,14 @@ public static class CourseMappings
             UpdatedAtUtc = course.UpdatedAtUtc,
             InstructorId = course.InstructorId
         };
+    }
+
+    public static void UpdateCourse(this Entities.Course course, UpdateCourseDto dto)
+    {
+        course.Title = dto.Title;
+        course.Description = dto.Description;
+        course.Category = dto.Category;
+        course.WorkloadHours = dto.WorkloadHours;
+        course.UpdatedAtUtc = DateTime.UtcNow;
     }
 }

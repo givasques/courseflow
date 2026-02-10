@@ -3,6 +3,7 @@ using System.Security.Claims;
 using CourseFlow.Api.Data;
 using CourseFlow.Api.DTOs.Course;
 using CourseFlow.Api.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,9 +19,10 @@ public sealed class CourseController(ApplicationDbContext applicationDbContext) 
     public async Task<IActionResult> CreateCourse(CreateCourseDto createCourseDto)
     {
         var identityId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        Instructor? instructor = await applicationDbContext.Instructors.FirstOrDefaultAsync(i => i.IdentityId == identityId);
+        Instructor? instructor = await applicationDbContext.Instructors
+            .FirstOrDefaultAsync(i => i.IdentityId == identityId);
 
-        Course course = createCourseDto.toEntity();
+        Course course = createCourseDto.ToEntity();
 
         if (instructor is not null)
         {
@@ -34,6 +36,16 @@ public sealed class CourseController(ApplicationDbContext applicationDbContext) 
 
         return CreatedAtAction(nameof(GetCourse), new { course.Id }, dto);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetCourses()
+    {
+        List<CourseDto>? courseDtos = applicationDbContext.Courses
+            .Select(CourseQueries.QueryToDto())
+            .ToList();
+
+        return Ok(courseDtos);
+    } 
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCourse(string id)
@@ -50,4 +62,49 @@ public sealed class CourseController(ApplicationDbContext applicationDbContext) 
 
         return Ok(courseDto);
     } 
+
+    [Authorize(Roles = $"{Roles.Admin},{Roles.Instructor}")]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateCourse(string id, [FromBody] UpdateCourseDto updateCourseDto)
+    {
+        Course? course = applicationDbContext.Courses
+            .FirstOrDefault(c => c.Id == id);
+
+        if (course is null)
+        {
+            return NotFound();
+        }
+
+        var identityId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        Instructor? instructor = await applicationDbContext.Instructors
+            .FirstOrDefaultAsync(i => i.IdentityId == identityId);
+
+        if (instructor is not null && instructor.Id != course.InstructorId)
+        {
+            return Forbid();
+        }
+
+        course.UpdateCourse(updateCourseDto);
+        await applicationDbContext.SaveChangesAsync();
+
+        return NoContent();
+    } 
+    
+    [Authorize(Roles=Roles.Admin)]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCourse(string id)
+    {
+        Course? course = applicationDbContext.Courses
+            .FirstOrDefault(c => c.Id == id);
+
+        if (course is null)
+        {
+            return NotFound();
+        }
+
+        applicationDbContext.Courses.Remove(course);
+        await applicationDbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
