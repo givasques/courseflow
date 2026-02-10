@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using CourseFlow.Api.Data;
 using CourseFlow.Api.DTOs.Course;
@@ -38,22 +39,47 @@ public sealed class CourseController(ApplicationDbContext applicationDbContext) 
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetCourses()
+    public async Task<ActionResult<CourseCollectionDto>> GetCourses([FromQuery] CourseQueryParamsDto query)
     {
-        List<CourseDto>? courseDtos = applicationDbContext.Courses
-            .Select(CourseQueries.QueryToDto())
-            .ToList();
+        string? lowerQuerySearch = query.Search is null ? null : query.Search.ToLower();
+        IQueryable<Course>? coursesQuery = applicationDbContext.Courses
+            .AsNoTracking()
+            .OrderByDescending(c => c.CreatedAtUtc)
+            .Where(c => string.IsNullOrWhiteSpace(lowerQuerySearch) 
+            || c.Title.ToLower().Contains(lowerQuerySearch))
+            .Where(c => query.Category == null || query.Category == c.Category);
 
-        return Ok(courseDtos);
+        int totalCount = await coursesQuery.CountAsync();
+
+        var totalPages = Math.Max(1, (int)Math.Ceiling((double)totalCount / query.PageSize));
+        query.Page = query.Page > totalPages ? totalPages : query.Page;
+
+        List<CourseDto>? coursesDto = await coursesQuery
+            .Skip((query.Page - 1) * query.PageSize)
+            .Take(query.PageSize)
+            .Select(CourseQueries.QueryToDto())
+            .ToListAsync();
+
+        var response = new CourseCollectionDto
+        {
+            Data = coursesDto,
+            TotalItems = totalCount,
+            TotalPages = totalPages,
+            CurrentPage = query.Page,
+            HasPreviousPage = query.Page > 1
+        };
+        response.HasNextPage = query.Page < response.TotalPages;
+
+        return Ok(response);
     } 
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCourse(string id)
     {
-        CourseDto? courseDto = applicationDbContext.Courses
+        CourseDto? courseDto = await applicationDbContext.Courses
             .Where(c => c.Id == id)
             .Select(CourseQueries.QueryToDto())
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
         if (courseDto is null)
         {
@@ -67,8 +93,8 @@ public sealed class CourseController(ApplicationDbContext applicationDbContext) 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCourse(string id, [FromBody] UpdateCourseDto updateCourseDto)
     {
-        Course? course = applicationDbContext.Courses
-            .FirstOrDefault(c => c.Id == id);
+        Course? course = await applicationDbContext.Courses
+            .FirstOrDefaultAsync(c => c.Id == id);
 
         if (course is null)
         {
@@ -94,8 +120,8 @@ public sealed class CourseController(ApplicationDbContext applicationDbContext) 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCourse(string id)
     {
-        Course? course = applicationDbContext.Courses
-            .FirstOrDefault(c => c.Id == id);
+        Course? course = await applicationDbContext.Courses
+            .FirstOrDefaultAsync(c => c.Id == id);
 
         if (course is null)
         {
