@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using CourseFlow.Api.Data;
 using CourseFlow.Api.Services.Application;
+using CourseFlow.Api.Services.Common;
 using CourseFlow.Api.Services.ExceptionHandler;
 using CourseFlow.Api.Services.Jwt;
 using CourseFlow.Api.Settings;
@@ -36,6 +37,10 @@ public static class DependencyInjection
         builder.Services.AddScoped<IUserRegistrationStrategy, InstructorRegistrationStrategy>();
 
         builder.Services.AddScoped<AuthService>();
+        builder.Services.AddScoped<CourseService>();
+
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
         return builder;
     }

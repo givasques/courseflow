@@ -36,7 +36,7 @@ public sealed class AuthService(
             if(!result.Succeeded)
             {
                 await transaction.RollbackAsync();
-                return ServiceResult<AccessTokenDto>.BadRequest<AccessTokenDto>(result.Errors);
+                return ServiceResult<AccessTokenDto>.BadRequest(result.Errors);
             }
 
             var registrationStrategy = registrationStrategies.FirstOrDefault(s => s.Role == registerDto.UserRole.ToString());
@@ -44,7 +44,7 @@ public sealed class AuthService(
             if (registrationStrategy is null)
             {
                 await transaction.RollbackAsync();
-                return ServiceResult<AccessTokenDto>.BadRequest<AccessTokenDto>("InvalidRole", "Invalid user role.");
+                return ServiceResult<AccessTokenDto>.BadRequest("InvalidRole", "Invalid user role.");
             }
 
             var strategyResult = await registrationStrategy.RegisterAsync(registerDto, identityUser);
@@ -52,7 +52,7 @@ public sealed class AuthService(
             if(!strategyResult.Succeeded)
             {
                 await transaction.RollbackAsync();
-                return ServiceResult<AccessTokenDto>.BadRequest<AccessTokenDto>(strategyResult.Errors);
+                return ServiceResult<AccessTokenDto>.BadRequest(strategyResult.Errors);
             }
             
             AccessTokenDto tokens = await tokenProvider.Create(identityUser);
@@ -84,7 +84,7 @@ public sealed class AuthService(
 
         if (identityUser is null || !await userManager.CheckPasswordAsync(identityUser, loginDto.Password))
         {
-            return ServiceResult<AccessTokenDto>.Unauthorized<AccessTokenDto>(
+            return ServiceResult<AccessTokenDto>.Unauthorized(
                 "InvalidCredentials", 
                 "Email or password is incorrect.");
         }
@@ -113,14 +113,14 @@ public sealed class AuthService(
 
         if(refreshToken is null)
         {
-            return ServiceResult<AccessTokenDto>.Unauthorized<AccessTokenDto>(
+            return ServiceResult<AccessTokenDto>.Unauthorized(
                 "InvalidRefreshToken", 
                 "The given refresh token is invalid.");
         }
 
         if (refreshToken.ExpiresAtUtc < DateTime.UtcNow)
         {
-            return ServiceResult<AccessTokenDto>.Unauthorized<AccessTokenDto>(
+            return ServiceResult<AccessTokenDto>.Unauthorized(
                 "RefreshTokenExpired", 
                 "The given refresh token is expired.");
         }

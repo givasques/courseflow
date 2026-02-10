@@ -8,4 +8,5 @@ public sealed class CreateCourseDto
     public string? Description { get; set; }
     public required CourseCategory Category { get; set; }
     public required int WorkloadHours { get; set; }
+    public string? InstructorId { get; set; }
 }

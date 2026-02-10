@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CourseFlow.Api;
+using Microsoft.AspNetCore.Identity;
 
 namespace CourseFlow.Api;
 
@@ -9,7 +10,7 @@ public class ServiceResult<T>
     public T? Data { get; set; }
     public Dictionary<string, string[]>? Errors { get; set; }
 
-    public static ServiceResult<T> Unauthorized<T>(string code, string message)
+    public static ServiceResult<T> Unauthorized(string code, string message)
         => new()
         {
             Success = false,
@@ -17,7 +18,29 @@ public class ServiceResult<T>
             Errors = new() { { code, [message] } }
         };
 
-    public static ServiceResult<T> BadRequest<T>(IEnumerable<IdentityError> errors)
+    public static ServiceResult<T> NotFound()
+        => new()
+        {
+            Success = false,
+            StatusCode = 404,
+        };
+
+    public static ServiceResult<T> NoContent()
+        => new()
+        {
+            Success = true,
+            StatusCode = 204,
+        };
+
+    public static ServiceResult<T> Forbidden(string code, string message)
+        => new()
+        {
+            Success = false,
+            StatusCode = 403,
+            Errors = new() { { code, [message] } }
+        };
+
+    public static ServiceResult<T> BadRequest(IEnumerable<IdentityError> errors)
         => new()
         {
             Success = false,
@@ -25,7 +48,7 @@ public class ServiceResult<T>
             Errors = errors.ToDictionary(e => e.Code, e => new[] { e.Description }) 
         };
 
-    public static ServiceResult<T> BadRequest<T>(string code, string message)
+    public static ServiceResult<T> BadRequest(string code, string message)
     => new()
     {
         Success = false,
@@ -33,7 +56,7 @@ public class ServiceResult<T>
         Errors = new() { { code, [message] } }
     };
 
-    public static ServiceResult<T> Ok<T> (T data)
+    public static ServiceResult<T> Ok(T data)
         => new()
         {
             Success = true,

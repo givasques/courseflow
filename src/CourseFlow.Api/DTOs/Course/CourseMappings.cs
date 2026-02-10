@@ -11,6 +11,7 @@ public static class CourseMappings
             Description = createCourseDto.Description,
             Category = createCourseDto.Category,
             WorkloadHours = createCourseDto.WorkloadHours,
+            InstructorId = createCourseDto.InstructorId,
             CreatedAtUtc = DateTime.UtcNow,
             UpdatedAtUtc = DateTime.UtcNow
         };
